@@ -1,0 +1,19 @@
+# Python dependencies for TetrisKart v2 PC-side application
+# Install with: pip install -r requirements.txt
+
+# Game rendering and window management
+pygame>=2.0.0
+
+# Serial communication with Raspberry Pi Pico
+pyserial>=3.5
+
+# Note: The following are standard library modules and don't need installation:
+# - json
+# - argparse
+# - dataclasses (Python 3.7+)
+# - time
+# - math
+# - random
+# - sys
+# - typing
+

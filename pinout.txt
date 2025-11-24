@@ -1,0 +1,169 @@
+Raspberry Pi Pico Pinout and Component Connections
+====================================================
+
+This document describes the GPIO pin assignments and component connections for the TetrisKart v2 project.
+
+I2C BUS (for MPU6050 IMU and SSD1306 OLED)
+-------------------------------------------
+GPIO 13  → SCL (Serial Clock)
+GPIO 12  → SDA (Serial Data)
+3.3V     → VCC (for both devices)
+GND      → Ground (for both devices)
+
+I2C Device Addresses:
+- MPU6050: 0x68 (104) or 0x69 (105)
+- SSD1306: 0x3C (60) or 0x3D (61)
+
+SPI BUS (for MAX7219 8x8 LED Matrix)
+-------------------------------------
+GPIO 6   → CLK (Clock) / SPI SCK
+GPIO 7   → DIN (Data In) / SPI MOSI
+GPIO 5   → CS (Chip Select)
+3.3V     → VCC (check module specs - some need 5V)
+GND      → Ground
+
+DIGITAL INPUTS
+---------------
+GPIO 10  → Button A (PULL_DOWN, active HIGH)
+            Function: Pause/Menu selection
+GPIO 11  → Button B (PULL_DOWN, active HIGH)
+            Function: Rotate piece / Back in menu
+
+ROTARY ENCODER
+--------------
+GPIO 14  → Encoder A (PULL_UP)
+GPIO 15  → Encoder B (PULL_UP)
+            Function: Menu navigation
+            Note: Quadrature encoder with debouncing
+
+ANALOG INPUT
+------------
+GPIO 26  → Potentiometer (ADC0)
+            Function: Controls drop speed
+            Range: 0-65535 (maps to 0.70s - 0.05s drop delay)
+            WARNING: GPIO 26 is also used for LED. Consider using a different ADC pin
+            if you need both potentiometer and LED on GPIO 26.
+
+OUTPUTS
+-------
+GPIO 9   → Buzzer (PWM)
+            Function: Audio feedback and music
+            PWM frequency: Variable (music notes)
+            PWM duty: 0-65535 (volume control)
+
+GPIO 25  → LED 1 (Digital Output)
+GPIO 26  → LED 2 (Digital Output) - CONFLICT with Potentiometer!
+GPIO 27  → LED 3 (Digital Output)
+GPIO 28  → LED 4 (Digital Output)
+            Function: Visual feedback for game events
+            Note: All LEDs turn on together for effects
+
+POWER
+-----
+VBUS     → 5V (from USB)
+3.3V     → 3.3V power rail
+GND      → Ground
+
+USB
+---
+USB D+   → USB Data+
+USB D-   → USB Data-
+            Function: Serial communication with PC
+            Baud rate: 115200
+
+PIN CONFLICT WARNING
+--------------------
+GPIO 26 is used for BOTH:
+1. Potentiometer (ADC0) - analog input
+2. LED 2 - digital output
+
+If you need both, consider:
+- Moving potentiometer to GPIO 27 (ADC1) or GPIO 28 (ADC2)
+- Or moving LED 2 to a different GPIO pin
+
+COMPONENT SPECIFICATIONS
+-------------------------
+MPU6050 IMU:
+- 6-axis accelerometer + gyroscope
+- I2C address: 0x68 (default) or 0x69 (if AD0 pin is high)
+- Power: 3.3V or 5V
+- Used for: Tilt detection (roll angle for horizontal movement)
+
+SSD1306 OLED:
+- 128x64 pixel monochrome display
+- I2C address: 0x3C (default) or 0x3D
+- Power: 3.3V or 5V
+- Used for: Score, level, lines cleared display
+
+MAX7219 8x8 Matrix:
+- 8x8 LED matrix driver
+- SPI interface
+- Power: 3.3V or 5V (check module specifications)
+- Used for: Score digits and level indicator
+
+Rotary Encoder:
+- Quadrature encoder (incremental)
+- 2-phase output (A and B)
+- Internal pull-ups required
+- Used for: Menu navigation
+
+Potentiometer:
+- 10kΩ recommended
+- Connected between 3.3V and GND
+- Wiper to GPIO 26 (ADC0)
+- Used for: Drop speed control
+
+Buttons:
+- Momentary push buttons
+- Pull-down resistors (internal)
+- Active HIGH (pressed = 1)
+- Used for: Game controls
+
+Buzzer:
+- Passive buzzer (PWM controlled)
+- Connected to GPIO 9
+- Used for: Music and sound effects
+
+LEDs:
+- Standard LEDs with current-limiting resistors (220Ω recommended)
+- 4 LEDs for visual feedback
+- Used for: Game event indicators
+
+WIRING DIAGRAM SUMMARY
+----------------------
+I2C Bus (shared):
+  3.3V ──┬── MPU6050 VCC
+         └── SSD1306 VCC
+  GND  ──┬── MPU6050 GND
+         └── SSD1306 GND
+  GPIO13 ─── MPU6050 SCL
+         └── SSD1306 SCL
+  GPIO12 ─── MPU6050 SDA
+         └── SSD1306 SDA
+
+SPI Bus:
+  GPIO6  ─── MAX7219 CLK
+  GPIO7  ─── MAX7219 DIN
+  GPIO5  ─── MAX7219 CS
+  3.3V   ─── MAX7219 VCC
+  GND    ─── MAX7219 GND
+
+Inputs:
+  GPIO10 ─── Button A (other side to 3.3V)
+  GPIO11 ─── Button B (other side to 3.3V)
+  GPIO14 ─── Encoder A
+  GPIO15 ─── Encoder B
+  GPIO26 ─── Potentiometer wiper (ends to 3.3V and GND)
+
+Outputs:
+  GPIO9  ─── Buzzer (+) (buzzer (-) to GND)
+  GPIO25 ─── LED1 (with 220Ω resistor to GND)
+  GPIO26 ─── LED2 (with 220Ω resistor to GND) [CONFLICT!]
+  GPIO27 ─── LED3 (with 220Ω resistor to GND)
+  GPIO28 ─── LED4 (with 220Ω resistor to GND)
+
+USB:
+  USB D+ ─── Pico USB D+
+  USB D- ─── Pico USB D-
+  (Standard USB cable connection to PC)
+
