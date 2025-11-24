@@ -5,6 +5,9 @@
 This project implements a Tetris game that uses a Raspberry Pi Pico microcontroller to read hardware sensors (IMU, buttons, rotary encoder, potentiometer) and control the game, while the PC handles the game logic and display rendering.
 Created by Trifaze-ME461 METU
 
+## Demo Video
+https://youtu.be/wHZ57piTW6k
+
 ## Architecture
 
 The system consists of two main components:
@@ -233,4 +236,5 @@ python display.py --mock-input
 ## Hardware Setup
 
 See `pinout.txt` for detailed pin connections.
+
 
